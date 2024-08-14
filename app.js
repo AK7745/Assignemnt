@@ -5,6 +5,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const bookRoutes = require('./routes/book-routes');
 const { connectDb } = require('./database/database');
+const sockets = require('./sockets/sockets');
 require('dotenv').config();
 
 const app = express();
@@ -24,16 +25,6 @@ app.use('/api', bookRoutes);
 
 connectDb()
 
-io.on('connection', (socket) => {
-    console.log('New client connected');
+sockets(io)
 
-    socket.on('subscribeToGenre', (genre) => {
-        socket.join(genre);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
-    });
-});
-
-module.exports = server;
+module.exports = { server, io };
